@@ -50,10 +50,12 @@ public final class Constants {
     public static final boolean kMotorCurrentLimitEnable = true;
     public static final int kMotorCurrentLimit = 120;
     public static final double kS = 0;
-    public static final double kV = 0;
-    public static final double kP = 0;
-    public static final double kI = 0;
+    public static final double kV = 0.12;
+    public static final double kA = 2.1;
+    public static final double kP = 0.4;
+    public static final double kI = 5;
     public static final double kD = 0;
+    
   
     
   }

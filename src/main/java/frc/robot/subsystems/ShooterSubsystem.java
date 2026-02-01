@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
@@ -49,6 +50,7 @@ public class ShooterSubsystem extends SubsystemBase {
     var slot0configs = new Slot0Configs();
     slot0configs.kS = ShooterConstants.kS;
     slot0configs.kV = ShooterConstants.kV;
+    slot0configs.kA = ShooterConstants.kA;
     slot0configs.kP = ShooterConstants.kP;
     slot0configs.kI = ShooterConstants.kI;
     slot0configs.kD = ShooterConstants.kD;
@@ -82,7 +84,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     */
     //Set Follow to Follow
-    FollowMotor.setControl(new Follower(MainMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+    FollowMotor.setControl(new Follower(MainMotor.getDeviceID(), MotorAlignmentValue.Aligned));
   }
 
   public void SetVelocity(int rps){
@@ -91,10 +93,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
     MainMotor.setControl(m_request.withVelocity(rps));
   }
-
+  public double GetVelocity(){
+    return MainMotor.getVelocity().getValueAsDouble();
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Shooter Velocity", GetVelocity());
   
   }
 }
