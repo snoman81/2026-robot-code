@@ -12,6 +12,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.KickerConstants;
@@ -56,8 +57,12 @@ public class KickerSubsystem extends SubsystemBase {
     KickerMotor.setControl(m_request.withOutput(speed));
    }
 
+    public double GetOutput(){
+    return KickerMotor.getDutyCycle().getValueAsDouble();
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Kicker Output", GetOutput());
   }
 }

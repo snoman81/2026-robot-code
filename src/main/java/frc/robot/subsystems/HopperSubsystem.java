@@ -12,6 +12,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.HopperConstants;
@@ -20,9 +21,9 @@ public class HopperSubsystem extends SubsystemBase {
   public final TalonFX HopperMotor = new TalonFX(HopperConstants.kHopperMotorPort, Constants.rioBus);
   /** Creates a new HopperSubsystem. */
   public HopperSubsystem() {
-
+    SethopperConfig();
   }
-    public void SetkickerConfig(){
+    public void SethopperConfig(){
     var motorConfigurator = HopperMotor.getConfigurator();
     var motorConfigs = new TalonFXConfiguration();  
     motorConfigs
@@ -52,8 +53,13 @@ public class HopperSubsystem extends SubsystemBase {
 
     HopperMotor.setControl(m_request.withOutput(speed));
   }
+
+    public double GetOutput(){
+    return HopperMotor.getDutyCycle().getValueAsDouble();
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Hopper Output", GetOutput());
   }
 }

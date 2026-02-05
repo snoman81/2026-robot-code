@@ -16,6 +16,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;;
@@ -107,8 +108,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
     PivotMotor.setControl(m_request.withPosition(position));
   }
+    public double GetRollerVelocity(){
+    return RollerMotor.getVelocity().getValueAsDouble();
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Roller Velocity", GetRollerVelocity());
   }
 }
