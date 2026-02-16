@@ -4,10 +4,16 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.CANBus;
+import com.google.flatbuffers.FlatBufferBuilder;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import frc.robot.generated.TunerConstants;
 
 
 
@@ -22,13 +28,19 @@ import edu.wpi.first.units.measure.Current;
 public final class Constants {
   public static final CANBus rioBus = new CANBus("rio");
 
+  public static class DriveConstants {
+    public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    public static final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+    
+  }
+
   public static class IntakeConstants {
     //Roller Motor Configs
     public static final int kRollerMotorPort = 0;
     public static final boolean kRollerMotorCurrentLimitEnable = true;
     public static final int kRollerMotorCurrentLimit = 80;
     //Roller Motor Constants
-
+    public static final double m_RollerVelocity = 0;
     //Pivor Motor Configs
     public static int kIntakePivotMotorPort = 0;
     public static AngularVelocity kPivotMMCV;
@@ -52,7 +64,7 @@ public final class Constants {
     public static final int kKickerMotorPort = 0;
     public static final boolean kKickerMotorCurrentLimitEnable = true;
     public static final int kKickerMotorCurrentLimit = 60;
-    public static final double m_KickerSpeed = 0;
+    public static final double m_KickerVelocity = 50; //rotations per second
     public static final double kS = 0;
     public static final double kV = 0;
     public static final double kA = 0;
@@ -67,7 +79,7 @@ public final class Constants {
     public static final int kHopperMotorPort = 0;
     public static final boolean kHopperMotorCurrentLimitEnable = true;
     public static final int kHopperMotorCurrentLimit = 60;
-    public static float m_HopperSpeed = 0;
+    public static double m_HopperSpeed = 0.3; //out
   
     
   }
