@@ -4,17 +4,22 @@
 
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.KickerConstants;
 import frc.robot.Constants.OperatorConstants;
 
 import frc.robot.commands.Autos;
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -39,6 +44,16 @@ public class RobotContainer {
   private final KickerSubsystem m_kicker = new KickerSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
   //-----------Drivetrain Setup-------------------------------------
+   /* Setting up bindings for necessary control of the swerve drive platform */
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(DriveConstants.MaxSpeed * 0.1).withRotationalDeadband(DriveConstants.MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
+    private final Telemetry logger = new Telemetry(DriveConstants.MaxSpeed);
+
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
   //-----------Controller & Auto Chooser----------------------------
   private final SendableChooser<Command> autoChooser;
@@ -51,7 +66,6 @@ public class RobotContainer {
   public RobotContainer() {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto", autoChooser);
-
     // Configure the trigger bindings
     configureBindings();
   }
@@ -66,12 +80,25 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    // Note that X is defined as forward according to WPILib convention,
+    // and Y is defined as to the left according to WPILib convention.
+    drivetrain.setDefaultCommand(
+    // Drivetrain will execute this command periodically
+    drivetrain.applyRequest(() ->
+      drive.withVelocityX(-m_driverController.getLeftY() * DriveConstants.MaxSpeed) // Drive forward with negative Y (forward)
+          .withVelocityY(-m_driverController.getLeftX() * DriveConstants.MaxSpeed) // Drive left with negative X (left)
+          .withRotationalRate(-m_driverController.getRightX() * DriveConstants.MaxAngularRate) // Drive counterclockwise with negative X (left)
+            )
+        );
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_driverController.a().onTrue(
       new ParallelCommandGroup(
       (new RunCommand(() -> m_hopper.setDutyCycleOut(HopperConstants.m_HopperSpeed), m_hopper)),
-      (new RunCommand(()-> m_kicker.setVelocity(KickerConstants.m_KickerSpeed), m_kicker))));
+      (new RunCommand(()-> m_kicker.setVelocity(KickerConstants.m_KickerVelocity), m_kicker))));
     m_driverController.b().onTrue(new RunCommand(()-> m_intake.setPivotPoint(IntakeConstants.m_PivotUp), m_intake));
+    m_driverController.x().onTrue(new RunCommand(() -> m_shooter.SetVelocity(300.0), m_shooter));
+    m_driverController.y();
+    
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
