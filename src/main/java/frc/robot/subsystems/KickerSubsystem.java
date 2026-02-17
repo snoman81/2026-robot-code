@@ -50,6 +50,7 @@ public class KickerSubsystem extends SubsystemBase {
       .withKI(KickerConstants.kI)
       .withKD(KickerConstants.kD)
     );
+    motorConfigs.Feedback.SensorToMechanismRatio = KickerConstants.mechanismRatio;
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
    
