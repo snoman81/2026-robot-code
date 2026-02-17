@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.CANBus;
-import com.google.flatbuffers.FlatBufferBuilder;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -85,7 +84,7 @@ public final class Constants {
   }
   public static class ShooterConstants {
 
-    public static final int kMainMotorPort = 0;
+    public static final int kMainMotorPort = 16;
     public static final int kFollowMotorPort = 0;
     public static final boolean kMotorCurrentLimitEnable = true;
     public static final int kMotorCurrentLimit = 120;
