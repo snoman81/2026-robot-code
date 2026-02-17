@@ -55,6 +55,7 @@ public class ShooterSubsystem extends SubsystemBase {
       .withKI(ShooterConstants.kI)
       .withKD(ShooterConstants.kD)
     );
+    motorConfigs.Feedback.SensorToMechanismRatio = ShooterConstants.mechanismRatio;
     // Config main MOTOR FIRST
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;

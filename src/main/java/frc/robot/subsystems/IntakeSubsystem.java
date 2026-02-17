@@ -13,13 +13,14 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.IntakeConstants;;
+import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   // ------------Define Motors------------------
@@ -39,13 +40,22 @@ public class IntakeSubsystem extends SubsystemBase {
     motorConfigs
       .withMotorOutput(
       new MotorOutputConfigs()
-      .withNeutralMode(NeutralModeValue.Brake)
+      .withNeutralMode(NeutralModeValue.Coast)
     )
     .withCurrentLimits(
       new CurrentLimitsConfigs()
       .withStatorCurrentLimitEnable(IntakeConstants.kRollerMotorCurrentLimitEnable)
       .withStatorCurrentLimit(IntakeConstants.kRollerMotorCurrentLimit)
+    )
+    .withSlot0(
+      new Slot0Configs()
+      .withKS(IntakeConstants.kRollerKS)
+      .withKV(IntakeConstants.kRollerKV)
+      .withKP(IntakeConstants.kRollerKP)
+      .withKI(IntakeConstants.kRollerKI)
+      .withKD(IntakeConstants.kRollerKD)
     );
+    motorConfigs.Feedback.SensorToMechanismRatio = IntakeConstants.rollerRatio;
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
    
@@ -85,6 +95,7 @@ public class IntakeSubsystem extends SubsystemBase {
       .withMotionMagicAcceleration(IntakeConstants.kPivotMMA)
       .withMotionMagicJerk(IntakeConstants.kPivotMMJ)
     );
+    motorConfigs.Feedback.SensorToMechanismRatio = IntakeConstants.pivotRatio;
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
    
@@ -96,11 +107,11 @@ public class IntakeSubsystem extends SubsystemBase {
       System.out.println("Could not apply configs, error code Status 1: " + status.toString());
     }
   }
-
+// -----methods-------------------------------------------------------------
   public void setRollerSpeed(double speed){
-    final DutyCycleOut m_request = new DutyCycleOut(0).withEnableFOC(true);
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
-    RollerMotor.setControl(m_request.withOutput(speed));
+    RollerMotor.setControl(m_request.withVelocity(speed).withEnableFOC(true));
   }
   
   public void setPivotPoint(double position){
@@ -111,9 +122,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public double GetRollerVelocity(){
     return RollerMotor.getVelocity().getValueAsDouble();
   }
+  public double GetPivotPosition(){
+    return PivotMotor.getPosition().getValueAsDouble();
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Roller Velocity", GetRollerVelocity());
+    SmartDashboard.putNumber("Pivot Position", GetPivotPosition());
   }
 }

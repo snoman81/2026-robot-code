@@ -38,7 +38,12 @@ public final class Constants {
     //Roller Motor Configs
     public static final int kRollerMotorPort = 0;
     public static final boolean kRollerMotorCurrentLimitEnable = true;
-    public static final int kRollerMotorCurrentLimit = 80;
+    public static final int kRollerMotorCurrentLimit = 80;    public static final double kRollerKS = 0;
+    public static final double kRollerKV = 0;
+    public static final double kRollerKP = 0;
+    public static final double kRollerKI = 0;
+    public static final double kRollerKD = 0;
+    public static final double rollerRatio = 0;
     //Roller Motor Constants
     public static final double m_RollerVelocity = 0;
     //Pivor Motor Configs
@@ -53,11 +58,10 @@ public final class Constants {
     public static final double kPivotKI = 0;
     public static final double kPivotKD = 0;
     public static final double kPivotMMA = 0;
-    public static final double kPivotMMJ = 0;
-    //Roller Motor Constants
+    public static final double kPivotMMJ = 0;   
+    public static final double pivotRatio = 0;
+    //Pivot Motor Setpoints
     public static final double m_PivotUp = 0;
-    
-
 
   }
   public static class KickerConstants {
@@ -71,8 +75,8 @@ public final class Constants {
     public static final double kP = 0;
     public static final double kI = 0;
     public static final double kD = 0;
+    public static final double mechanismRatio = 0;
   
-    
   }
   public static class HopperConstants {
 
@@ -81,7 +85,6 @@ public final class Constants {
     public static final int kHopperMotorCurrentLimit = 60;
     public static double m_HopperSpeed = 0.3; //out
   
-    
   }
   public static class ShooterConstants {
 
@@ -95,10 +98,7 @@ public final class Constants {
     public static final double kP = 0;
     public static final double kI = 0;
     public static final double kD = 0;
-    public static double kMMA;
-    public static double kMMJ;
-    
-  
+    public static final double mechanismRatio = 0;
     
   }
 
