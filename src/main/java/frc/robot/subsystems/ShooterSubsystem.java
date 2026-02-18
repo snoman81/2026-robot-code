@@ -74,7 +74,7 @@ public class ShooterSubsystem extends SubsystemBase {
       System.out.println("Could not apply configs, error code Status 1: " + status.toString());
     }
     //Set Follow to Follow
-    FollowMotor.setControl(new Follower(MainMotor.getDeviceID(), MotorAlignmentValue.Aligned));
+    FollowMotor.setControl(new Follower(MainMotor.getDeviceID(), MotorAlignmentValue.Opposed));
   }
   //----SysID Methods---------------------------------------------------------
 private final SysIdRoutine m_ShooterSysIdRoutine = 

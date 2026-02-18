@@ -65,14 +65,14 @@ public final class Constants {
     public static final int kKickerMotorPort = 35;
     public static final boolean kKickerMotorCurrentLimitEnable = true;
     public static final int kKickerMotorCurrentLimit = 60;
-    public static final double m_KickerVelocity = 50; //rotations per second, find a number and tune shooter after
+    public static final double m_KickerVelocity = 300; //rotations per second, find a number and tune shooter after
     public static final double kS = 0;
     public static final double kV = 0;
     public static final double kA = 0;
     public static final double kP = 10;
     public static final double kI = 0;
     public static final double kD = 0;
-    public static final double mechanismRatio = 1;
+    public static final double mechanismRatio = 3;
   
   }
   public static class HopperConstants {
