@@ -59,7 +59,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
   //-----------Controller & Auto Chooser----------------------------
-  private final SendableChooser<Command> autoChooser;
+  //private final SendableChooser<Command> autoChooser;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -67,8 +67,8 @@ public class RobotContainer {
   //----------------------------------------------------------------------------------------------
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto", autoChooser);
+    //autoChooser = AutoBuilder.buildAutoChooser();
+    //SmartDashboard.putData("Auto", autoChooser);
     // Configure the trigger bindings
     configureBindings();
   }
@@ -131,6 +131,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected();
+    return new RunCommand(()-> m_intake.setRollerSpeed(0), m_intake);//autoChooser.getSelected();
   }
 }

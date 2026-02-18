@@ -9,10 +9,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.CANBus;
-import com.google.flatbuffers.FlatBufferBuilder;
 
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
 import frc.robot.generated.TunerConstants;
 
 
@@ -36,27 +33,27 @@ public final class Constants {
 
   public static class IntakeConstants {
     //Roller Motor Configs
-    public static final int kRollerMotorPort = 0;
+    public static final int kRollerMotorPort = 31;
     public static final boolean kRollerMotorCurrentLimitEnable = true;
     public static final int kRollerMotorCurrentLimit = 80;    public static final double kRollerKS = 0;
     public static final double kRollerKV = 0;
-    public static final double kRollerKP = 0;
+    public static final double kRollerKP = 0.1;
     public static final double kRollerKI = 0;
     public static final double kRollerKD = 0;
     public static final double rollerRatio = 0;
     //Roller Motor Constants
-    public static final double m_RollerVelocity = 0;
+    public static final double m_RollerVelocity = 50;
     //Pivor Motor Configs
-    public static int kIntakePivotMotorPort = 0;
-    public static AngularVelocity kPivotMMCV;
+    public static int kIntakePivotMotorPort = 32;
     public static final boolean kPivorMotorCurrentLimitEnable = false;
-    public static final Current kPivotMotorCurrentLimit = null;
+    public static final double kPivotMotorCurrentLimit = 80;
     public static final double kPivotKS = 0;
     public static final double kPivotKV = 0;
     public static final double kPivotKA = 0;
     public static final double kPivotKP = 0;
     public static final double kPivotKI = 0;
     public static final double kPivotKD = 0;
+    public static final double kPivotMMCV = 0;
     public static final double kPivotMMA = 0;
     public static final double kPivotMMJ = 0;   
     public static final double pivotRatio = 0;
@@ -65,14 +62,14 @@ public final class Constants {
 
   }
   public static class KickerConstants {
-    public static final int kKickerMotorPort = 0;
+    public static final int kKickerMotorPort = 35;
     public static final boolean kKickerMotorCurrentLimitEnable = true;
     public static final int kKickerMotorCurrentLimit = 60;
     public static final double m_KickerVelocity = 50; //rotations per second
     public static final double kS = 0;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double kP = 0;
+    public static final double kP = 0.1;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double mechanismRatio = 0;
@@ -80,7 +77,7 @@ public final class Constants {
   }
   public static class HopperConstants {
 
-    public static final int kHopperMotorPort = 0;
+    public static final int kHopperMotorPort = 30;
     public static final boolean kHopperMotorCurrentLimitEnable = true;
     public static final int kHopperMotorCurrentLimit = 60;
     public static double m_HopperSpeed = 0.3; //out
@@ -88,14 +85,14 @@ public final class Constants {
   }
   public static class ShooterConstants {
 
-    public static final int kMainMotorPort = 0;
-    public static final int kFollowMotorPort = 0;
+    public static final int kMainMotorPort = 33;
+    public static final int kFollowMotorPort = 34;
     public static final boolean kMotorCurrentLimitEnable = true;
     public static final int kMotorCurrentLimit = 120;
     public static final double kS = 0;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double kP = 0;
+    public static final double kP = 0.1;
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double mechanismRatio = 0;
