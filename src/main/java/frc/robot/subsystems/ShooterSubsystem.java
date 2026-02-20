@@ -84,7 +84,7 @@ private final SysIdRoutine m_ShooterSysIdRoutine =
          Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
          null,        // Use default timeout (10 s)
                       // Log state with Phoenix SignalLogger class
-         (state) -> SignalLogger.writeString("state", state.toString())
+         (state) -> SignalLogger.writeString("SysIDShooter_State", state.toString())
       ),
       new SysIdRoutine.Mechanism(
          (volts) -> MainMotor.setControl(new VoltageOut(0).withOutput(volts.in(Volts))),

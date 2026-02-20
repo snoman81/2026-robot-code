@@ -120,7 +120,7 @@ private final SysIdRoutine m_RollerSysIdRoutine =
          Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
          null,        // Use default timeout (10 s)
                       // Log state with Phoenix SignalLogger class
-         (state) -> SignalLogger.writeString("state", state.toString())
+         (state) -> SignalLogger.writeString("SysIDRoller_state", state.toString())
       ),
       new SysIdRoutine.Mechanism(
          (volts) -> RollerMotor.setControl(new VoltageOut(0).withOutput(volts.in(Volts))),
@@ -135,7 +135,7 @@ private final SysIdRoutine m_PivotSysIdRoutine =
          Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
          null,        // Use default timeout (10 s)
                       // Log state with Phoenix SignalLogger class
-         (state) -> SignalLogger.writeString("state", state.toString())
+         (state) -> SignalLogger.writeString("SysIDPivot_state", state.toString())
       ),
       new SysIdRoutine.Mechanism(
          (volts) -> PivotMotor.setControl(new VoltageOut(0).withOutput(volts.in(Volts))),

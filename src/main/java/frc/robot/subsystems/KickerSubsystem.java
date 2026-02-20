@@ -76,7 +76,7 @@ private final SysIdRoutine m_KickerSysIdRoutine =
          Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
          null,        // Use default timeout (10 s)
                       // Log state with Phoenix SignalLogger class
-         (state) -> SignalLogger.writeString("state", state.toString())
+         (state) -> SignalLogger.writeString("SysIDKicker_state", state.toString())
       ),
       new SysIdRoutine.Mechanism(
          (volts) -> KickerMotor.setControl(new VoltageOut(0).withOutput(volts.in(Volts))),
