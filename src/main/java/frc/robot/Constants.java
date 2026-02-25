@@ -42,7 +42,7 @@ public final class Constants {
     public static final double kRollerKD = 0;
     public static final double rollerRatio = 1.33;
     //Roller Motor Constants
-    public static final double m_RollerVelocity = 50;
+    public static final double m_RollerVelocity = -50;
     //Pivor Motor Configs
     public static final int kIntakePivotMotorPort = 32;
     public static final boolean kPivorMotorCurrentLimitEnable = false;
@@ -50,7 +50,7 @@ public final class Constants {
     public static final double kPivotKS = 0;
     public static final double kPivotKV = 0;
     public static final double kPivotKA = 0;
-    public static final double kPivotKP = 0;
+    public static final double kPivotKP = 1;
     public static final double kPivotKI = 0;
     public static final double kPivotKD = 0;
     public static final double kPivotMMCV = 0;
@@ -64,23 +64,23 @@ public final class Constants {
   public static class KickerConstants {
     public static final int kKickerMotorPort = 35;
     public static final boolean kKickerMotorCurrentLimitEnable = true;
-    public static final int kKickerMotorCurrentLimit = 60;
-    public static final double m_KickerVelocity = 300; //rotations per second, find a number and tune shooter after
+    public static final int kKickerMotorCurrentLimit = 80;
+    public static final double m_KickerVelocity = 2500; //rotations per minute, find a number and tune shooter after
     public static final double kS = 0;
     public static final double kV = 0;
     public static final double kA = 0;
-    public static final double kP = 10;
+    public static final double kP = 1;
     public static final double kI = 0;
     public static final double kD = 0;
-    public static final double mechanismRatio = 3;
+    public static final double mechanismRatio = 5;
   
   }
   public static class HopperConstants {
 
     public static final int kHopperMotorPort = 30;
     public static final boolean kHopperMotorCurrentLimitEnable = true;
-    public static final int kHopperMotorCurrentLimit = 60;
-    public static double m_HopperSpeed = 0.3; //out
+    public static final int kHopperMotorCurrentLimit = 80;
+    public static double m_HopperSpeed = -0.85; //out
   
   }
   public static class ShooterConstants {
@@ -89,13 +89,13 @@ public final class Constants {
     public static final int kFollowMotorPort = 34;
     public static final boolean kMotorCurrentLimitEnable = true;
     public static final int kMotorCurrentLimit = 120;
-    public static final double kS = 0;
-    public static final double kV = 0;
-    public static final double kA = 0;
-    public static final double kP = 10;
+    public static final double kS = 0.076416;
+    public static final double kV = 0.13126;
+    public static final double kA = 0.021383;
+    public static final double kP = 0.17515;
     public static final double kI = 0;
     public static final double kD = 0;
-    public static final double mechanismRatio = 1.5;// count to get right value
+    public static final double mechanismRatio = 1.28;// count to get right value
     
   }
 

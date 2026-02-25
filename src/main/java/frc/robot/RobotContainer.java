@@ -93,6 +93,10 @@ public class RobotContainer {
           .withRotationalRate(-m_driverController.getRightX() * DriveConstants.MaxAngularRate) // Drive counterclockwise with negative X (left)
           )
         );
+    /* 
+    m_shooter.setDefaultCommand(new RunCommand(() -> m_shooter.SetVelocity(100), m_shooter));
+    m_intake.setDefaultCommand(new RunCommand(()-> m_intake.setRollerSpeed(0),m_intake));
+    */
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_driverController.a()
     .onTrue(
@@ -101,22 +105,23 @@ public class RobotContainer {
       (new RunCommand(()-> m_kicker.setVelocity(KickerConstants.m_KickerVelocity), m_kicker))))
     .onFalse(
       new ParallelCommandGroup(
-      (new RunCommand(() -> m_hopper.setDutyCycleOut(0), m_hopper)),
-      (new RunCommand(()-> m_kicker.setVelocity(0), m_kicker)))
+      (new RunCommand(() -> m_hopper.setNeutral(), m_hopper)),
+      (new RunCommand(()-> m_kicker.setNeutral(), m_kicker)))
       );
     //m_driverController.b().onTrue(new RunCommand(()-> m_intake.setPivotPoint(IntakeConstants.m_PivotUp), m_intake));
-    m_driverController.x().onTrue(new RunCommand(() -> m_shooter.SetVelocity(300.0), m_shooter))
-    .onFalse(new RunCommand(()-> m_shooter.SetVelocity(0), m_shooter));
+    m_driverController.x().onTrue(new RunCommand(() -> m_shooter.SetVelocity(2500), m_shooter))
+    .onFalse(new RunCommand(()-> m_shooter.setNeutral(), m_shooter));
     m_driverController.y();
-    m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake));
+    m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake))
+    .onFalse(new RunCommand(()-> m_intake.setRollerNeutral(),m_intake));
     
 
     //Reset Heading
     m_driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     //-----------SysID Stuffs------------------------------------------------------------------------------
-    m_driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    m_driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    //m_driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    //m_driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
@@ -142,19 +147,19 @@ public class RobotContainer {
     m_driverController.povRight().whileTrue(m_intake.RollersysIdDynamic(Direction.kReverse));
     */
     //--Kicker---------------------------------------------------------------------------
-    /* 
+    /* */
     m_driverController.povUp().whileTrue(m_kicker.sysIDQuasistatic(Direction.kForward));
     m_driverController.povDown().whileTrue(m_kicker.sysIDQuasistatic(Direction.kReverse));
     m_driverController.povLeft().whileTrue(m_kicker.sysIdDynamic(Direction.kForward));
     m_driverController.povRight().whileTrue(m_kicker.sysIdDynamic(Direction.kReverse));
-    */
+    
     //--Shooter---------------------------------------------------------------------------
-    /* */
+    /* 
     m_driverController.povUp().whileTrue(m_shooter.sysIDQuasistatic(Direction.kForward));
     m_driverController.povDown().whileTrue(m_shooter.sysIDQuasistatic(Direction.kReverse));
     m_driverController.povLeft().whileTrue(m_shooter.sysIdDynamic(Direction.kForward));
     m_driverController.povRight().whileTrue(m_shooter.sysIdDynamic(Direction.kReverse));
-    
+    */
   }
 
   /**

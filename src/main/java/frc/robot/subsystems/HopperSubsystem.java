@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -56,6 +57,9 @@ public class HopperSubsystem extends SubsystemBase {
 
     public double GetOutput(){
     return HopperMotor.getDutyCycle().getValueAsDouble();
+  }
+    public void setNeutral (){
+    HopperMotor.setControl(new NeutralOut()); 
   }
   @Override
   public void periodic() {

@@ -12,7 +12,9 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -84,7 +86,7 @@ private final SysIdRoutine m_ShooterSysIdRoutine =
          Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
          null,        // Use default timeout (10 s)
                       // Log state with Phoenix SignalLogger class
-         (state) -> SignalLogger.writeString("state", state.toString())
+         (state) -> SignalLogger.writeString("SysIDShooter_State", state.toString())
       ),
       new SysIdRoutine.Mechanism(
          (volts) -> MainMotor.setControl(new VoltageOut(0).withOutput(volts.in(Volts))),
@@ -100,13 +102,19 @@ private final SysIdRoutine m_ShooterSysIdRoutine =
    return m_ShooterSysIdRoutine.dynamic(direction);
   }
 // -----methods-------------------------------------------------------------
-  public void SetVelocity(double rps){
-    rps = rps/60;
+  public void SetVelocity(double rpm){
+    rpm = rpm/60;
     final VelocityVoltage m_request = 
     new VelocityVoltage(0).withSlot(0);
 
-    MainMotor.setControl(m_request.withVelocity(rps).withEnableFOC(true));
+    MainMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
   }
+
+  public void setNeutral (){
+    MainMotor.setControl(new NeutralOut()); 
+  }
+
+
   public double GetVelocity(){
     return MainMotor.getVelocity().getValueAsDouble() * 60;
   }
