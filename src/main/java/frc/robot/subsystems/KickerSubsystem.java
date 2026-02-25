@@ -13,6 +13,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.CoastOut;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -92,14 +94,16 @@ private final SysIdRoutine m_KickerSysIdRoutine =
    return m_KickerSysIdRoutine.dynamic(direction);
   }
   //------Methods----------------------------------------------------------------------
-   public void setVelocity(double rps) {
-     rps = rps/60;
+   public void setVelocity(double rpm) {
+     rpm = rpm/60;
     final VelocityVoltage m_request = 
     new VelocityVoltage(0).withSlot(0);
 
-    KickerMotor.setControl(m_request.withVelocity(rps).withEnableFOC(true));
+    KickerMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
    }
-
+     public void setNeutral (){
+    KickerMotor.setControl(new NeutralOut()); 
+  }
     public double getVelocity(){
     return KickerMotor.getVelocity().getValueAsDouble() * 60;
   }

@@ -105,14 +105,15 @@ public class RobotContainer {
       (new RunCommand(()-> m_kicker.setVelocity(KickerConstants.m_KickerVelocity), m_kicker))))
     .onFalse(
       new ParallelCommandGroup(
-      (new RunCommand(() -> m_hopper.setDutyCycleOut(0), m_hopper)),
-      (new RunCommand(()-> m_kicker.setVelocity(0), m_kicker)))
+      (new RunCommand(() -> m_hopper.setNeutral(), m_hopper)),
+      (new RunCommand(()-> m_kicker.setNeutral(), m_kicker)))
       );
     //m_driverController.b().onTrue(new RunCommand(()-> m_intake.setPivotPoint(IntakeConstants.m_PivotUp), m_intake));
-    m_driverController.x().onTrue(new RunCommand(() -> m_shooter.SetVelocity(1000), m_shooter))
-    .onFalse(new RunCommand(()-> m_shooter.SetVelocity(0), m_shooter));
+    m_driverController.x().onTrue(new RunCommand(() -> m_shooter.SetVelocity(2500), m_shooter))
+    .onFalse(new RunCommand(()-> m_shooter.setNeutral(), m_shooter));
     m_driverController.y();
-    m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake));
+    m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake))
+    .onFalse(new RunCommand(()-> m_intake.setRollerNeutral(),m_intake));
     
 
     //Reset Heading
@@ -146,12 +147,12 @@ public class RobotContainer {
     m_driverController.povRight().whileTrue(m_intake.RollersysIdDynamic(Direction.kReverse));
     */
     //--Kicker---------------------------------------------------------------------------
-    /* 
+    /* */
     m_driverController.povUp().whileTrue(m_kicker.sysIDQuasistatic(Direction.kForward));
     m_driverController.povDown().whileTrue(m_kicker.sysIDQuasistatic(Direction.kReverse));
     m_driverController.povLeft().whileTrue(m_kicker.sysIdDynamic(Direction.kForward));
     m_driverController.povRight().whileTrue(m_kicker.sysIdDynamic(Direction.kReverse));
-    */
+    
     //--Shooter---------------------------------------------------------------------------
     /* 
     m_driverController.povUp().whileTrue(m_shooter.sysIDQuasistatic(Direction.kForward));

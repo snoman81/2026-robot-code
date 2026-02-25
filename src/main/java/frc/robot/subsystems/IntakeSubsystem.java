@@ -14,7 +14,9 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -162,6 +164,10 @@ private final SysIdRoutine m_PivotSysIdRoutine =
 
     RollerMotor.setControl(m_request.withVelocity(speed).withEnableFOC(true));
   }
+
+  public void setRollerNeutral (){
+    RollerMotor.setControl(new NeutralOut()); 
+  }
   
   public void setPivotPoint(double position){
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0).withEnableFOC(true);
@@ -169,7 +175,7 @@ private final SysIdRoutine m_PivotSysIdRoutine =
     PivotMotor.setControl(m_request.withPosition(position));
   }
     public double GetRollerVelocity(){
-    return RollerMotor.getVelocity().getValueAsDouble();
+    return RollerMotor.getVelocity().getValueAsDouble() *60;
   }
   public double GetPivotPosition(){
     return PivotMotor.getPosition().getValueAsDouble();
