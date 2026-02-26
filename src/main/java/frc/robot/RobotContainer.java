@@ -11,6 +11,7 @@ import frc.robot.Constants.KickerConstants;
 import frc.robot.Constants.OperatorConstants;
 
 import frc.robot.commands.Autos;
+import frc.robot.commands.TargetHub;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
@@ -111,7 +112,7 @@ public class RobotContainer {
     //m_driverController.b().onTrue(new RunCommand(()-> m_intake.setPivotPoint(IntakeConstants.m_PivotUp), m_intake));
     m_driverController.x().onTrue(new RunCommand(() -> m_shooter.SetVelocity(2500), m_shooter))
     .onFalse(new RunCommand(()-> m_shooter.setNeutral(), m_shooter));
-    m_driverController.y();
+    m_driverController.y().toggleOnTrue(new TargetHub(drivetrain));
     m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake))
     .onFalse(new RunCommand(()-> m_intake.setRollerNeutral(),m_intake));
     
