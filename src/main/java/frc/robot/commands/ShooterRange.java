@@ -25,8 +25,9 @@ public class ShooterRange extends Command {
 
   public ShooterRange(ShooterSubsystem shooter) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_shooter = shooter;
+    
     addRequirements(m_shooter);
-    shooter = m_shooter;
   }
 
   // Called when the command is initially scheduled.
@@ -52,7 +53,7 @@ public class ShooterRange extends Command {
     double shooterspeed = 0;
     boolean visibleTarget = false;
 
-    if (allowed_tags.contains(LimelightHelpers.getFiducialID("limelight"))){
+    if (allowed_tags.contains(tag)){
 
     }
 

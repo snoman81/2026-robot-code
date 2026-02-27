@@ -31,8 +31,9 @@ public class TargetHub extends Command {
 
   public TargetHub(CommandSwerveDrivetrain drive) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_drivetrain = drive;
+    
     addRequirements(m_drivetrain);
-    drive = m_drivetrain;
   }
 
   // Called when the command is initially scheduled.
@@ -45,8 +46,10 @@ public class TargetHub extends Command {
     double turn = 0.0;
     double targetYaw = 0.0;
     boolean visibleTarget = false;
+    double tagg = LimelightHelpers.getFiducialID("limelight");
+    int tag = (int) tagg;
     
-    if (allowed_tags.contains(LimelightHelpers.getFiducialID("limelight"))){
+    if (allowed_tags.contains(tag)){
       targetYaw = LimelightHelpers.getTX("limelight");
       visibleTarget = true;
     }

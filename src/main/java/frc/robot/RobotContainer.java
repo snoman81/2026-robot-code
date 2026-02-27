@@ -122,7 +122,7 @@ public class RobotContainer {
 
     //-----------SysID Stuffs------------------------------------------------------------------------------
     //m_driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    //m_driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    m_driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
