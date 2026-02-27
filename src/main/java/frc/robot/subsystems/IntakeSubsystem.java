@@ -159,10 +159,11 @@ private final SysIdRoutine m_PivotSysIdRoutine =
    return m_PivotSysIdRoutine.dynamic(direction);
   }
 // -----methods-------------------------------------------------------------
-  public void setRollerSpeed(double speed){
+  public void setRollerSpeed(double rpm){
+    rpm = rpm/60;
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
-    RollerMotor.setControl(m_request.withVelocity(speed).withEnableFOC(true));
+    RollerMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
   }
 
   public void setRollerNeutral (){
