@@ -70,8 +70,22 @@ public class KickerSubsystem extends SubsystemBase {
       System.out.println("Could not apply configs, error code Status 1: " + status.toString());
     }
   }
+//------Methods----------------------------------------------------------------------
+   public void setVelocity(double rpm) {
+     rpm = rpm/60;
+    final VelocityVoltage m_request = 
+    new VelocityVoltage(0).withSlot(0);
+
+    KickerMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
+   }
+     public void setNeutral (){
+    KickerMotor.setControl(new NeutralOut()); 
+  }
+    public double getVelocity(){
+    return KickerMotor.getVelocity().getValueAsDouble() * 60;
+  }
 //----SysID Methods---------------------------------------------------------
-private final SysIdRoutine m_KickerSysIdRoutine = 
+  private final SysIdRoutine m_KickerSysIdRoutine = 
    new SysIdRoutine(
       new SysIdRoutine.Config(
          null,        // Use default ramp rate (1 V/s)
@@ -92,20 +106,6 @@ private final SysIdRoutine m_KickerSysIdRoutine =
    }
    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
    return m_KickerSysIdRoutine.dynamic(direction);
-  }
-  //------Methods----------------------------------------------------------------------
-   public void setVelocity(double rpm) {
-     rpm = rpm/60;
-    final VelocityVoltage m_request = 
-    new VelocityVoltage(0).withSlot(0);
-
-    KickerMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
-   }
-     public void setNeutral (){
-    KickerMotor.setControl(new NeutralOut()); 
-  }
-    public double getVelocity(){
-    return KickerMotor.getVelocity().getValueAsDouble() * 60;
   }
   @Override
   public void periodic() {

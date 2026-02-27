@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
   public Robot() {
     /* 
     //AKIT Init
-    Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+    Logger.recordMetadata("2026-3275-test", "MyProject"); // Set a metadata value
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")

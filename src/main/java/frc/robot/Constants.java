@@ -8,6 +8,9 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ctre.phoenix6.CANBus;
 
 import frc.robot.generated.TunerConstants;
@@ -29,6 +32,11 @@ public final class Constants {
     public static final double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
     
+  }
+
+  public static final class TagLists {
+      public static final List<Integer> blueTags = Arrays.asList(18,21,24,25,26,27);
+      public static final List<Integer> redTags = Arrays.asList(2,5,8,9,10,11);
   }
 
   public static class IntakeConstants {

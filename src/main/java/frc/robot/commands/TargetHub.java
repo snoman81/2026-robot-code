@@ -11,34 +11,46 @@ import java.util.List;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.TagLists;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LimelightHelpers;
+import frc.robot.subsystems.VisionSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TargetHub extends Command {
   /** Creates a new TargetHub. */
     private  CommandSwerveDrivetrain m_drivetrain; 
+    private VisionSubsystem m_vision;
+    private List<Integer> tags;
+    private final SwerveRequest.RobotCentric drive = 
+    new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private double rot_kP = .035;
     private double vision_desired_angle = 0.0;
     private double max_rot_speed = DriveConstants.MaxAngularRate;
-    private List<Integer> allowed_tags = Arrays.asList(1,2,3);
 
-    private final SwerveRequest.RobotCentric drive = 
-    new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
-  public TargetHub(CommandSwerveDrivetrain drive) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public TargetHub(CommandSwerveDrivetrain drive, VisionSubsystem vision) {
     m_drivetrain = drive;
-    
+    m_vision = vision;
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_drivetrain);
+    addRequirements(m_vision);
   }
-
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    Alliance alliance =
+    DriverStation.getAlliance().orElse(Alliance.Blue);
+
+    if (alliance == Alliance.Red) {
+           tags = TagLists.redTags;
+        }
+    else{tags = TagLists.blueTags;} //i dont trust it to work without else :sob:
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -46,10 +58,8 @@ public class TargetHub extends Command {
     double turn = 0.0;
     double targetYaw = 0.0;
     boolean visibleTarget = false;
-    double tagg = LimelightHelpers.getFiducialID("limelight");
-    int tag = (int) tagg;
-    
-    if (allowed_tags.contains(tag)){
+ 
+    if (tags.contains(m_vision.getTagRawInt())){
       targetYaw = LimelightHelpers.getTX("limelight");
       visibleTarget = true;
     }

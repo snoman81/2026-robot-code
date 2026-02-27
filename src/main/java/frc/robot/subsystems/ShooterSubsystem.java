@@ -12,7 +12,6 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -22,6 +21,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,12 +33,13 @@ public class ShooterSubsystem extends SubsystemBase {
     // ------------Define Motors------------------
   public final TalonFX MainMotor = new TalonFX(ShooterConstants.kMainMotorPort, Constants.rioBus);
   public final TalonFX FollowMotor = new TalonFX(ShooterConstants.kFollowMotorPort, Constants.rioBus);
+  public final InterpolatingDoubleTreeMap distancetoRPM = new InterpolatingDoubleTreeMap();
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     SetShooterConfigs();
+    RPMMapFill();
   }
-
-  // -----cfgs-------------------------------------------------------------
+// -----cfgs-------------------------------------------------------------
   public void SetShooterConfigs(){
     var motorConfigurator1 = MainMotor.getConfigurator();
     var motorConfigurator2 = FollowMotor.getConfigurator();
@@ -78,7 +79,34 @@ public class ShooterSubsystem extends SubsystemBase {
     //Set Follow to Follow
     FollowMotor.setControl(new Follower(MainMotor.getDeviceID(), MotorAlignmentValue.Opposed));
   }
-  //----SysID Methods---------------------------------------------------------
+
+  public void RPMMapFill(){ // Fill with shooter testing next week
+    distancetoRPM.put(1.0,1000.0);
+    distancetoRPM.put(1.5,1250.0);
+    distancetoRPM.put(2.0,1500.0);
+    distancetoRPM.put(2.5,1750.0);
+    distancetoRPM.put(3.0,2000.0);
+    }
+// -----methods-------------------------------------------------------------
+  public void SetVelocity(double rpm){
+    rpm = rpm/60;
+    final VelocityVoltage m_request = 
+    new VelocityVoltage(0).withSlot(0);
+
+    MainMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
+  }
+
+  public void setNeutral (){
+    MainMotor.setControl(new NeutralOut()); 
+  }
+
+  public double GetVelocity(){
+    return MainMotor.getVelocity().getValueAsDouble() * 60;
+  }
+  public double getRPM(double distanceMeters){
+    return distancetoRPM.get(distanceMeters);
+  }
+//----SysID Methods---------------------------------------------------------
 private final SysIdRoutine m_ShooterSysIdRoutine = 
    new SysIdRoutine(
       new SysIdRoutine.Config(
@@ -101,23 +129,7 @@ private final SysIdRoutine m_ShooterSysIdRoutine =
    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
    return m_ShooterSysIdRoutine.dynamic(direction);
   }
-// -----methods-------------------------------------------------------------
-  public void SetVelocity(double rpm){
-    rpm = rpm/60;
-    final VelocityVoltage m_request = 
-    new VelocityVoltage(0).withSlot(0);
-
-    MainMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
-  }
-
-  public void setNeutral (){
-    MainMotor.setControl(new NeutralOut()); 
-  }
-
-
-  public double GetVelocity(){
-    return MainMotor.getVelocity().getValueAsDouble() * 60;
-  }
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

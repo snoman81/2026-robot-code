@@ -24,6 +24,7 @@ public class HopperSubsystem extends SubsystemBase {
   public HopperSubsystem() {
     SethopperConfig();
   }
+  //----------------cfgs------------------------------------------------------------------------
     public void SethopperConfig(){
     var motorConfigurator = HopperMotor.getConfigurator();
     var motorConfigs = new TalonFXConfiguration();  
@@ -48,7 +49,7 @@ public class HopperSubsystem extends SubsystemBase {
       System.out.println("Could not apply configs, error code Status 1: " + status.toString());
     }
   }
-
+//-------methods----------------------------------------------------------------------------------
   public void setDutyCycleOut(double speed) {
     final DutyCycleOut m_request = new DutyCycleOut(0).withEnableFOC(true);
 

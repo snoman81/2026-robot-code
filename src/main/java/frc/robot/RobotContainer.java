@@ -11,6 +11,7 @@ import frc.robot.Constants.KickerConstants;
 import frc.robot.Constants.OperatorConstants;
 
 import frc.robot.commands.Autos;
+import frc.robot.commands.IntakeMove;
 import frc.robot.commands.TargetHub;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -47,6 +49,7 @@ public class RobotContainer {
   private final HopperSubsystem m_hopper = new HopperSubsystem();
   private final KickerSubsystem m_kicker = new KickerSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  private final VisionSubsystem m_vision = new VisionSubsystem();
   //-----------Drivetrain Setup-------------------------------------
    /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -109,10 +112,9 @@ public class RobotContainer {
       (new RunCommand(() -> m_hopper.setNeutral(), m_hopper)),
       (new RunCommand(()-> m_kicker.setNeutral(), m_kicker)))
       );
-    //m_driverController.b().onTrue(new RunCommand(()-> m_intake.setPivotPoint(IntakeConstants.m_PivotUp), m_intake));
-    m_driverController.x().onTrue(new RunCommand(() -> m_shooter.SetVelocity(2500), m_shooter))
-    .onFalse(new RunCommand(()-> m_shooter.setNeutral(), m_shooter));
-    m_driverController.y().toggleOnTrue(new TargetHub(drivetrain));
+    m_driverController.b().onTrue(new IntakeMove(0, m_intake));
+    //m_driverController.x().onTrue(new RunCommand(() -> m_shooter.SetVelocity(2500), m_shooter)).onFalse(new RunCommand(()-> m_shooter.setNeutral(), m_shooter));
+    //m_driverController.y().toggleOnTrue(new TargetHub(drivetrain, m_vision));
     m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake))
     .onFalse(new RunCommand(()-> m_intake.setRollerNeutral(),m_intake));
     

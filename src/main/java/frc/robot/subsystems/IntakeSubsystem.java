@@ -14,7 +14,6 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -22,24 +21,26 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   // ------------Define Motors------------------
   public final TalonFX RollerMotor = new TalonFX(IntakeConstants.kRollerMotorPort, Constants.rioBus);
   public final TalonFX PivotMotor = new TalonFX(IntakeConstants.kIntakePivotMotorPort, Constants.rioBus);
+  public final InterpolatingDoubleTreeMap speedtoRPM = new InterpolatingDoubleTreeMap();
   /** Creates a new Intake. */
   public IntakeSubsystem() {
     SetRollerConfig();
     SetPivotConfig();
+    RPMMapFill();
   }
-
-  
 // -----cfgs-------------------------------------------------------------
   public void SetRollerConfig(){
     var motorConfigurator = RollerMotor.getConfigurator();
@@ -65,7 +66,6 @@ public class IntakeSubsystem extends SubsystemBase {
     motorConfigs.Feedback.SensorToMechanismRatio = IntakeConstants.rollerRatio;
     /* Retry config apply up to 5 times, report if failure */
     StatusCode status = StatusCode.StatusCodeNotInitialized;
-   
     for (int i = 0; i < 5; ++i) {
       status = motorConfigurator.apply(motorConfigs);
       if (status.isOK()) break;
@@ -74,7 +74,6 @@ public class IntakeSubsystem extends SubsystemBase {
       System.out.println("Could not apply configs, error code Status 1: " + status.toString());
     }
   }
-
   public void SetPivotConfig(){
     var motorConfigurator = PivotMotor.getConfigurator();
     var motorConfigs = new TalonFXConfiguration(); 
@@ -113,6 +112,42 @@ public class IntakeSubsystem extends SubsystemBase {
     if (!status.isOK() ) {
       System.out.println("Could not apply configs, error code Status 1: " + status.toString());
     }
+  }
+
+    public void RPMMapFill(){ // Fill with intake testing 
+    speedtoRPM.put(0.0,1000.0);
+    speedtoRPM.put(1.5,1250.0);
+    speedtoRPM.put(2.0,1500.0);
+    speedtoRPM.put(2.5,1750.0);
+    speedtoRPM.put(DriveConstants.MaxSpeed,2000.0);
+    }
+// -----methods-------------------------------------------------------------
+  public void setRollerSpeed(double rpm){
+    rpm = rpm/60;
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+
+    RollerMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
+  }
+
+  public void setRollerNeutral (){
+    RollerMotor.setControl(new NeutralOut()); 
+  }
+  
+  public void setPivotPoint(double position){
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0).withEnableFOC(true);
+    PivotMotor.setControl(m_request.withPosition(position));
+  }
+  public void setPivotNeutral(){
+    PivotMotor.setControl(new NeutralOut());
+  }
+    public double getRollerVelocity(){
+    return RollerMotor.getVelocity().getValueAsDouble() *60;
+  }
+  public double getPivotPosition(){
+    return PivotMotor.getPosition().getValueAsDouble();
+  }
+  public boolean getPivotatPoint(){
+    return PivotMotor.getMotionMagicAtTarget().getValue();
   }
 //----SysID Methods---------------------------------------------------------
 private final SysIdRoutine m_RollerSysIdRoutine = 
@@ -158,33 +193,11 @@ private final SysIdRoutine m_PivotSysIdRoutine =
    public Command PivotsysIdDynamic(SysIdRoutine.Direction direction) {
    return m_PivotSysIdRoutine.dynamic(direction);
   }
-// -----methods-------------------------------------------------------------
-  public void setRollerSpeed(double rpm){
-    rpm = rpm/60;
-    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
-    RollerMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
-  }
-
-  public void setRollerNeutral (){
-    RollerMotor.setControl(new NeutralOut()); 
-  }
-  
-  public void setPivotPoint(double position){
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0).withEnableFOC(true);
-
-    PivotMotor.setControl(m_request.withPosition(position));
-  }
-    public double GetRollerVelocity(){
-    return RollerMotor.getVelocity().getValueAsDouble() *60;
-  }
-  public double GetPivotPosition(){
-    return PivotMotor.getPosition().getValueAsDouble();
-  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Roller Velocity", GetRollerVelocity());
-    SmartDashboard.putNumber("Pivot Position", GetPivotPosition());
+    SmartDashboard.putNumber("Roller Velocity", getRollerVelocity());
+    SmartDashboard.putNumber("Pivot Position", getPivotPosition());
   }
 }
