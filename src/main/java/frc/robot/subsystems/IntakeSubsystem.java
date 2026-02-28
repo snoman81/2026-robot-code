@@ -14,6 +14,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -59,6 +60,7 @@ public class IntakeSubsystem extends SubsystemBase {
       new Slot0Configs()
       .withKS(IntakeConstants.kRollerKS)
       .withKV(IntakeConstants.kRollerKV)
+      .withKA(IntakeConstants.kRollerKA)
       .withKP(IntakeConstants.kRollerKP)
       .withKI(IntakeConstants.kRollerKI)
       .withKD(IntakeConstants.kRollerKD)
@@ -91,6 +93,7 @@ public class IntakeSubsystem extends SubsystemBase {
       .withKS(IntakeConstants.kPivotKS)
       .withKV(IntakeConstants.kPivotKV)
       .withKA(IntakeConstants.kPivotKA)
+      .withKG(IntakeConstants.kPivotKG)
       .withKP(IntakeConstants.kPivotKP)
       .withKI(IntakeConstants.kPivotKI)
       .withKD(IntakeConstants.kPivotKD)
@@ -122,11 +125,10 @@ public class IntakeSubsystem extends SubsystemBase {
     speedtoRPM.put(DriveConstants.MaxSpeed,2000.0);
     }
 // -----methods-------------------------------------------------------------
-  public void setRollerSpeed(double rpm){
-    rpm = rpm/60;
+  public void setRollerSpeed(double rps){
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
-    RollerMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
+    RollerMotor.setControl(m_request.withVelocity(rps).withEnableFOC(true));
   }
 
   public void setRollerNeutral (){
@@ -137,17 +139,23 @@ public class IntakeSubsystem extends SubsystemBase {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0).withEnableFOC(true);
     PivotMotor.setControl(m_request.withPosition(position));
   }
+  public void setPivotOut(double output){
+    PivotMotor.setControl(new DutyCycleOut(output));
+  }
   public void setPivotNeutral(){
     PivotMotor.setControl(new NeutralOut());
   }
     public double getRollerVelocity(){
-    return RollerMotor.getVelocity().getValueAsDouble() *60;
+    return RollerMotor.getVelocity().getValueAsDouble();
   }
   public double getPivotPosition(){
     return PivotMotor.getPosition().getValueAsDouble();
   }
   public boolean getPivotatPoint(){
     return PivotMotor.getMotionMagicAtTarget().getValue();
+  }
+  public double getRollerVelErr(){
+    return RollerMotor.getClosedLoopError().getValueAsDouble();
   }
 //----SysID Methods---------------------------------------------------------
 private final SysIdRoutine m_RollerSysIdRoutine = 
@@ -198,6 +206,7 @@ private final SysIdRoutine m_PivotSysIdRoutine =
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Roller Velocity", getRollerVelocity());
+    SmartDashboard.putNumber("Roller Velocity Error", getRollerVelErr());
     SmartDashboard.putNumber("Pivot Position", getPivotPosition());
   }
 }

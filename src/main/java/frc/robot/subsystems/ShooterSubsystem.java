@@ -88,12 +88,11 @@ public class ShooterSubsystem extends SubsystemBase {
     distancetoRPM.put(3.0,2000.0);
     }
 // -----methods-------------------------------------------------------------
-  public void SetVelocity(double rpm){
-    rpm = rpm/60;
+  public void SetVelocity(double rps){
     final VelocityVoltage m_request = 
     new VelocityVoltage(0).withSlot(0);
 
-    MainMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
+    MainMotor.setControl(m_request.withVelocity(rps).withEnableFOC(true));
   }
 
   public void setNeutral (){
@@ -101,8 +100,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double GetVelocity(){
-    return MainMotor.getVelocity().getValueAsDouble() * 60;
+    return MainMotor.getVelocity().getValueAsDouble();
   }
+    public double getShooterVelErr(){
+    return MainMotor.getClosedLoopError().getValueAsDouble();
+    }
   public double getRPM(double distanceMeters){
     return distancetoRPM.get(distanceMeters);
   }
@@ -133,7 +135,8 @@ private final SysIdRoutine m_ShooterSysIdRoutine =
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Shooter Velocity", GetVelocity());
+    SmartDashboard.putNumber("Shooter RPS", GetVelocity());
+    SmartDashboard.putNumber("Shooter RPS Error", getShooterVelErr());
   
   }
 }

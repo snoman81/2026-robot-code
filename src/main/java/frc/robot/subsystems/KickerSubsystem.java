@@ -71,19 +71,21 @@ public class KickerSubsystem extends SubsystemBase {
     }
   }
 //------Methods----------------------------------------------------------------------
-   public void setVelocity(double rpm) {
-     rpm = rpm/60;
+   public void setVelocity(double rps) {
     final VelocityVoltage m_request = 
     new VelocityVoltage(0).withSlot(0);
 
-    KickerMotor.setControl(m_request.withVelocity(rpm).withEnableFOC(true));
+    KickerMotor.setControl(m_request.withVelocity(rps).withEnableFOC(true));
    }
      public void setNeutral (){
     KickerMotor.setControl(new NeutralOut()); 
   }
     public double getVelocity(){
-    return KickerMotor.getVelocity().getValueAsDouble() * 60;
+    return KickerMotor.getVelocity().getValueAsDouble();
   }
+      public double getKickerVelErr(){
+    return KickerMotor.getClosedLoopError().getValueAsDouble();
+    }
 //----SysID Methods---------------------------------------------------------
   private final SysIdRoutine m_KickerSysIdRoutine = 
    new SysIdRoutine(
@@ -110,6 +112,7 @@ public class KickerSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Kicker Velocity", getVelocity());
+    SmartDashboard.putNumber("Kicker RPS", getVelocity());
+    SmartDashboard.putNumber("Kicker RPS Error", getKickerVelErr());
   }
 }
