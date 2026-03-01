@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.TagLists;
 import frc.robot.subsystems.LimelightHelpers;
@@ -30,7 +31,8 @@ public class ShooterRange extends Command {
   private List<Integer> tags;
 
   private double distance_to_goal = 0.0;
-
+  private double shooterspeed = 0;
+  private boolean visibleTarget = false;
   public ShooterRange(ShooterSubsystem shooter, VisionSubsystem vision) {
     m_shooter = shooter;
     m_vision = vision;
@@ -54,28 +56,39 @@ public class ShooterRange extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double shooterspeed = 0;
-    boolean visibleTarget = false;
-    var PoseEstimate = m_vision.getEstimatedGlobalPose();
-   
-    if (PoseEstimate != null && m_vision.getTagRawInt() >= 2){
-      Pose2d robotPose = PoseEstimate.get();
-      double distance_to_goal = robotPose.getTranslation()
+
+    var PoseEstimate = LimelightHelpers.getBotPose2d_wpiBlue("limelight");
+    SmartDashboard.putNumber("tagcount", m_vision.tagCount());
+    SmartDashboard.putNumber("tagID", m_vision.getTagRawInt());
+    SmartDashboard.putBoolean("right tag?", tags.contains(m_vision.getTagRawInt()));
+    
+    //SmartDashboard.putBoolean("pose?", PoseEstimate.isPresent());
+    if (/*PoseEstimate.isPresent() &&*/ m_vision.tagCount() >= 1){
+      //Pose2d robotPose = PoseEstimate.get();
+      double distance_to_goal = PoseEstimate.getTranslation()
       .getDistance(layout.getTagPose(m_vision.getTagRawInt()).get().toPose2d().getTranslation());
-    }
+      SmartDashboard.putNumber("dist?", distance_to_goal);
 
     if (tags.contains(m_vision.getTagRawInt())){
       visibleTarget = true;
+      SmartDashboard.putBoolean("target?", visibleTarget);
       shooterspeed = m_shooter.getRPM(distance_to_goal);
-    }
+      SmartDashboard.putNumber("FetchedRPM", shooterspeed);
+    
     if (visibleTarget){
       m_shooter.SetVelocity(shooterspeed);
+       }
+      }
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_shooter.setNeutral();
+    visibleTarget = false;
+    shooterspeed = 0;
+  }
 
   // Returns true when the command should end.
   @Override
