@@ -118,11 +118,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
     public void RPMMapFill(){ // Fill with intake testing 
-    speedtoRPM.put(0.0,1000.0);
-    speedtoRPM.put(1.5,1250.0);
-    speedtoRPM.put(2.0,1500.0);
-    speedtoRPM.put(2.5,1750.0);
-    speedtoRPM.put(DriveConstants.MaxSpeed,2000.0);
+    speedtoRPM.put(0.0,5.0);
+    speedtoRPM.put(1.5,10.0);
+    speedtoRPM.put(2.0,15.0);
+    speedtoRPM.put(2.5,17.5);
+    speedtoRPM.put(DriveConstants.MaxSpeed,60.0);
     }
 // -----methods-------------------------------------------------------------
   public void setRollerSpeed(double rps){
