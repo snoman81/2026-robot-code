@@ -46,7 +46,7 @@ public class TunerConstants {
     private static final SteerMotorArrangement kSteerMotorType = SteerMotorArrangement.TalonFX_Integrated;
 
     // The remote sensor feedback type to use for the steer motors;
-    // When not Pro-licensed, Fused*/Sync* automatically fall back to Remote*
+    // When not Pro-licensed, Fused*//*Sync* automatically fall back to Remote*
     private static final SteerFeedbackType kSteerFeedbackType = SteerFeedbackType.FusedCANcoder;
 
     // The stator current at which the wheels start to slip;
@@ -191,7 +191,7 @@ public class TunerConstants {
             kBackRightXPos, kBackRightYPos, kInvertRightSide, kBackRightSteerMotorInverted, kBackRightEncoderInverted
         );
 
-    /**
+    /* 
      * Creates a CommandSwerveDrivetrain instance.
      * This should only be called once in your robot program,.
      */
@@ -206,7 +206,7 @@ public class TunerConstants {
      * Swerve Drive class utilizing CTR Electronics' Phoenix 6 API with the selected device types.
      */
     public static class TunerSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> {
-        /**
+        /* 
          * Constructs a CTRE SwerveDrivetrain using the specified constants.
          * <p>
          * This constructs the underlying hardware devices, so users should not construct
