@@ -157,6 +157,9 @@ public class IntakeSubsystem extends SubsystemBase {
   public double getRollerVelErr(){
     return RollerMotor.getClosedLoopError().getValueAsDouble();
   }
+  public double getRPM(double speed){
+    return speedtoRPM.get(speed);
+  }
 //----SysID Methods---------------------------------------------------------
 private final SysIdRoutine m_RollerSysIdRoutine = 
    new SysIdRoutine(

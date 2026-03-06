@@ -70,7 +70,7 @@ public final class Constants {
     public static final double pivotRatio = 50;
     //Pivot Motor Setpoints
     public static final double m_PivotUp = 0;
-    public static final double m_PivotDown = 0.25;
+    public static final double m_PivotDown = 0.375;
     
 
   }

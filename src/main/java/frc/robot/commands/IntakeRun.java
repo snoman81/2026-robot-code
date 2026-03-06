@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.*;
 
@@ -11,6 +12,7 @@ import frc.robot.subsystems.*;
 public class IntakeRun extends Command {
   private IntakeSubsystem m_intake;
   private CommandSwerveDrivetrain m_drivetrain;
+  private double speed = 0;
   /** Creates a new IntakeRun. */
   public IntakeRun(IntakeSubsystem intake, CommandSwerveDrivetrain drive) {
     m_intake = intake;
@@ -26,12 +28,16 @@ public class IntakeRun extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    double chassisspeed = m_drivetrain.ChassisSpeedsCalc();
+    speed = m_intake.getRPM(chassisspeed);
+    m_intake.setRollerSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_intake.setRollerNeutral();
+  }
 
   // Returns true when the command should end.
   @Override
