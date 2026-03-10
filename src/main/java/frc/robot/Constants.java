@@ -56,7 +56,7 @@ public final class Constants {
     //Pivor Motor Configs
     public static final int kIntakePivotMotorPort = 32;
     public static final boolean kPivorMotorCurrentLimitEnable = false;
-    public static final double kPivotMotorCurrentLimit = 80;
+    public static final double kPivotMotorCurrentLimit = 40;
     public static final double kPivotKS = 0.13865;
     public static final double kPivotKV = 0.10193;
     public static final double kPivotKA = 0.011877;
@@ -93,7 +93,7 @@ public final class Constants {
     public static final int kHopperMotorPort = 30;
     public static final boolean kHopperMotorCurrentLimitEnable = true;
     public static final int kHopperMotorCurrentLimit = 60;
-    public static double m_HopperSpeed = 0.50; //out
+    public static final double m_HopperSpeed = 0.75; //out
   
   }
   public static class ShooterConstants {

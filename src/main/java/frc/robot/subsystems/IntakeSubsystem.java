@@ -145,6 +145,9 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setPivotNeutral(){
     PivotMotor.setControl(new NeutralOut());
   }
+  public void setPivotZero(){
+    PivotMotor.setPosition(0.0);
+  }
     public double getRollerVelocity(){
     return RollerMotor.getVelocity().getValueAsDouble();
   }
