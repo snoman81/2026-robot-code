@@ -115,30 +115,31 @@ public class RobotContainer {
       (new RunCommand(()-> m_kicker.setNeutral(), m_kicker)))
       );
     m_driverController.b().onTrue(new IntakeMove(0, m_intake));
+    m_driverController.y().onTrue(new IntakeMove(0.375, m_intake));
     //m_driverController.x().onTrue(new RunCommand(() -> m_shooter.SetVelocity(42), m_shooter)).onFalse(new RunCommand(()-> m_shooter.setNeutral(), m_shooter));
     m_driverController.x().toggleOnTrue(new ShooterRange(m_shooter, m_vision));
-    m_driverController.y().toggleOnTrue(new TargetHub(drivetrain, m_vision));
+    //m_driverController.y().toggleOnTrue(new TargetHub(drivetrain, m_vision));
     m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake))
     .onFalse(new RunCommand(()-> m_intake.setRollerNeutral(),m_intake));
     
-    m_driverController.leftBumper().onTrue(new RunCommand(() -> m_intake.setPivotOut(0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
-   m_driverController.rightBumper().onTrue(new RunCommand(() -> m_intake.setPivotOut(-0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
+    //m_driverController.leftBumper().onTrue(new RunCommand(() -> m_intake.setPivotOut(0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
+    //m_driverController.rightBumper().onTrue(new RunCommand(() -> m_intake.setPivotOut(-0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
     //Reset Heading
     m_driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
  
     //-----------SysID Stuffs------------------------------------------------------------------------------
-    //m_driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    //m_driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    m_driverController.leftBumper().onTrue(Commands.runOnce(()->SignalLogger.setPath("/u/logs")).andThen(SignalLogger::start));
+    m_driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
     //----Drivetrain--------------------------------------------------------------------
-    /* 
+    /* */
     m_driverController.back().and(m_driverController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     m_driverController.back().and(m_driverController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
     m_driverController.start().and(m_driverController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
     m_driverController.start().and(m_driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-    */
+    
     //--Intake Pivot---------------------------------------------------------------------------
     /* 
     m_driverController.povUp().whileTrue(m_intake.PivotsysIDQuasistatic(Direction.kForward));

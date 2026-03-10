@@ -78,7 +78,7 @@ public final class Constants {
     public static final int kKickerMotorPort = 35;
     public static final boolean kKickerMotorCurrentLimitEnable = true;
     public static final int kKickerMotorCurrentLimit = 60;
-    public static final double m_KickerVelocity = 15;
+    public static final double m_KickerVelocity = -15;
     public static final double kS = 0.1194;
     public static final double kV = 0.5;//0.11295;
     public static final double kA = 0.008;
@@ -93,7 +93,7 @@ public final class Constants {
     public static final int kHopperMotorPort = 30;
     public static final boolean kHopperMotorCurrentLimitEnable = true;
     public static final int kHopperMotorCurrentLimit = 60;
-    public static double m_HopperSpeed = 0.70; //out
+    public static double m_HopperSpeed = -0.70; //out
   
   }
   public static class ShooterConstants {
@@ -102,9 +102,9 @@ public final class Constants {
     public static final int kFollowMotorPort = 34;
     public static final boolean kMotorCurrentLimitEnable = true;
     public static final int kMotorCurrentLimit = 120;
-    public static final double kS = 0.076416;
-    public static final double kV = 0.13126;
-    public static final double kA = 0.021383;
+    public static final double kS = 0.0015561;
+    public static final double kV = 0.11164;
+    public static final double kA = 0.021171;
     public static final double kP = 0.17515;
     public static final double kI = 0.025;
     public static final double kD = 0;
