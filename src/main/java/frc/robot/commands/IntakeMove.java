@@ -12,6 +12,7 @@ public class IntakeMove extends Command {
   /** Creates a new IntakeDown. */
   private IntakeSubsystem m_intake;
   private double m_setpoint;
+  private boolean m_hold;
   public IntakeMove(double setpoint, IntakeSubsystem intake) {
     m_intake = intake;
     m_setpoint = setpoint;
@@ -22,18 +23,31 @@ public class IntakeMove extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+  m_hold = false; 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     m_intake.setPivotPoint(m_setpoint);
+    if (m_setpoint == 0){
+      m_hold = false;
+    }
+    else{
+      m_hold = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if (m_hold){
+      m_intake.setPivotOut(0.02);
+    }
+    else{
+      m_intake.setPivotOut(0.0);
+    }
+  }
 
   // Returns true when the command should end.
   @Override
