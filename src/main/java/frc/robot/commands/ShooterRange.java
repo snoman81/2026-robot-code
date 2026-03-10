@@ -75,7 +75,7 @@ public class ShooterRange extends Command {
       shooterspeed = m_shooter.getRPM(distance_to_goal);
       SmartDashboard.putNumber("FetchedRPM", shooterspeed);
     
-    if (visibleTarget){
+    if (visibleTarget && shooterspeed > 25.0){
       m_shooter.SetVelocity(shooterspeed);
        }
       }

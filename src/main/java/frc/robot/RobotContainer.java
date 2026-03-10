@@ -23,11 +23,14 @@ import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -91,12 +94,15 @@ public class RobotContainer {
   private void configureBindings() {
     // Note that X is defined as forward according to WPILib convention,
     // and Y is defined as to the left according to WPILib convention.
+    DoubleSupplier driverX = ()->m_driverController.getLeftY();
+    DoubleSupplier driverY = ()->m_driverController.getLeftX();
+    DoubleSupplier driverROT = ()->m_driverController.getRightX();
     drivetrain.setDefaultCommand(
     // Drivetrain will execute this command periodically
     drivetrain.applyRequest(() ->
-      drive.withVelocityX(-m_driverController.getLeftY() * DriveConstants.MaxSpeed) // Drive forward with negative Y (forward)
-          .withVelocityY(-m_driverController.getLeftX() * DriveConstants.MaxSpeed) // Drive left with negative X (left)
-          .withRotationalRate(-m_driverController.getRightX() * DriveConstants.MaxAngularRate) // Drive counterclockwise with negative X (left)
+      drive.withVelocityX(-MathUtil.applyDeadband(driverX.getAsDouble()*DriveConstants.MaxSpeed,0.2) )// Drive forward with negative Y (forward)
+          .withVelocityY(-MathUtil.applyDeadband(driverY.getAsDouble()*DriveConstants.MaxSpeed,0.2)) // Drive left with negative X (left)
+          .withRotationalRate(-MathUtil.applyDeadband(driverROT.getAsDouble()*DriveConstants.MaxAngularRate, 0.2)) // Drive counterclockwise with negative X (left)
           )
         );
     /* 
@@ -118,12 +124,14 @@ public class RobotContainer {
     m_driverController.y().onTrue(new IntakeMove(0.375, m_intake));
     //m_driverController.x().onTrue(new RunCommand(() -> m_shooter.SetVelocity(42), m_shooter)).onFalse(new RunCommand(()-> m_shooter.setNeutral(), m_shooter));
     m_driverController.x().toggleOnTrue(new ShooterRange(m_shooter, m_vision));
-    //m_driverController.y().toggleOnTrue(new TargetHub(drivetrain, m_vision));
-    m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake))
-    .onFalse(new RunCommand(()-> m_intake.setRollerNeutral(),m_intake));
-    
-    //m_driverController.leftBumper().onTrue(new RunCommand(() -> m_intake.setPivotOut(0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
-    //m_driverController.rightBumper().onTrue(new RunCommand(() -> m_intake.setPivotOut(-0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
+    m_driverController.y().toggleOnTrue(new TargetHub(driverX, driverY, drivetrain, m_vision));
+    //m_driverController.rightTrigger().onTrue(new IntakeRun(m_intake, drivetrain));
+    m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake)).onFalse(new RunCommand(()-> m_intake.setRollerNeutral(),m_intake));
+    m_driverController.leftBumper().onTrue(new IntakeMove(IntakeConstants.m_PivotDown, m_intake));
+    m_driverController.rightBumper().onTrue(new IntakeMove(IntakeConstants.m_PivotUp, m_intake));
+    m_driverController.povDown().onTrue(new RunCommand(()-> m_intake.setPivotOut(0.25), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
+  //m_driverController.leftBumper().onTrue(new RunCommand(() -> m_intake.setPivotOut(0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
+  //m_driverController.rightBumper().onTrue(new RunCommand(() -> m_intake.setPivotOut(-0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
     //Reset Heading
     m_driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
  

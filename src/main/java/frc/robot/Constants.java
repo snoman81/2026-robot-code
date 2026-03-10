@@ -52,7 +52,7 @@ public final class Constants {
     public static final double kRollerKD = 0;
     public static final double rollerRatio = 1.33;
     //Roller Motor Constants
-    public static final double m_RollerVelocity = -25;
+    public static final double m_RollerVelocity = -50;
     //Pivor Motor Configs
     public static final int kIntakePivotMotorPort = 32;
     public static final boolean kPivorMotorCurrentLimitEnable = false;
