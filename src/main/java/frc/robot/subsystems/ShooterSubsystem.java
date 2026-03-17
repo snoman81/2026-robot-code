@@ -83,10 +83,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public void RPMMapFill(){ // Fill with shooter testing next week
     distancetoRPM.put(0.75,0.0);
     distancetoRPM.put(1.25, 0.0);
-    distancetoRPM.put(1.5,30.0);
-    distancetoRPM.put(2.0,33.0);
-    distancetoRPM.put(2.5,35.0);
-    distancetoRPM.put(3.0,36.5);
+    distancetoRPM.put(1.3,28.5);
+    distancetoRPM.put(1.5,29.0);
+    distancetoRPM.put(2.0,32.0);
+    distancetoRPM.put(2.5,33.5);
+    distancetoRPM.put(3.0,35.5);
     distancetoRPM.put(4.0,38.0);
     }
 // -----methods-------------------------------------------------------------

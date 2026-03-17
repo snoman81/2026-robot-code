@@ -162,6 +162,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configureAutoBuilder();
     }
 
     /**
@@ -316,10 +317,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         , super.getState().Speeds.vyMetersPerSecond);
     }
 
-        private void configureAutoBuilder() {
-
-       
-
+    public void configureAutoBuilder() {
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
@@ -339,8 +337,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     new PIDConstants(7, 0, 0)
                 ),
                 config,
-                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                ()-> {
+                    var alliance = DriverStation.getAlliance();
+                    if(alliance.isPresent()){
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                    },
                 this // Subsystem for requirements
             );
         } catch (Exception ex) {

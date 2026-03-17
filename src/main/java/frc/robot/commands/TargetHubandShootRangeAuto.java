@@ -23,21 +23,21 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.TagLists;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TargetHubandShootRange extends Command {
+public class TargetHubandShootRangeAuto extends Command {
   /** Creates a new TargetHub. */
-    private DoubleSupplier m_X;
-    private DoubleSupplier m_Y;
-    private DoubleSupplier m_Omega;
     private ShooterSubsystem m_shooter;
-    private  CommandSwerveDrivetrain m_drivetrain; 
+    private CommandSwerveDrivetrain m_drivetrain; 
     private VisionSubsystem m_vision;
+    private HopperSubsystem m_hopper;
     private List<Integer> tags;
     private AprilTagFieldLayout layout =
     AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
@@ -50,16 +50,15 @@ public class TargetHubandShootRange extends Command {
     private double vision_desired_angle = 0.0;
     private double max_rot_speed = DriveConstants.MaxAngularRate;
 
-  public TargetHubandShootRange(DoubleSupplier driverX, DoubleSupplier driverY,DoubleSupplier driverROT, CommandSwerveDrivetrain drive, ShooterSubsystem shooter, VisionSubsystem vision) {
-    m_X = driverX;
-    m_Y = driverY;
-    m_Omega = driverROT;
+  public TargetHubandShootRangeAuto(CommandSwerveDrivetrain drive, ShooterSubsystem shooter,HopperSubsystem hopper, VisionSubsystem vision) {
     m_shooter = shooter;
     m_drivetrain = drive;
+    m_hopper = hopper;
     m_vision = vision;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
     addRequirements(m_drivetrain);
+    addRequirements(m_hopper);
     addRequirements(m_vision);
   }
   // Called when the command is initially scheduled.
@@ -110,21 +109,22 @@ public class TargetHubandShootRange extends Command {
       SmartDashboard.putNumber("turnout2", turn2);
       SmartDashboard.putNumber("turnout3", turn3);
       m_drivetrain.setControl(
-        drive.withVelocityX(-m_X.getAsDouble())
-        .withVelocityY(-m_Y.getAsDouble())
-        .withRotationalRate(turn2)
-        );
+        drive.withVelocityX(0)
+        .withVelocityY(0)
+        .withRotationalRate(turn2));
+        
     if (inrange){
       m_shooter.SetVelocity(shooterspeed);
+      m_hopper.setDutyCycleOut(HopperConstants.m_HopperSpeed);
     }
     }
     }
     }
         else {
             m_drivetrain.setControl(
-        drive.withVelocityX(-m_X.getAsDouble())
-        .withVelocityY(-m_Y.getAsDouble())
-        .withRotationalRate(m_Omega.getAsDouble()));
+        drive.withVelocityX(0)
+        .withVelocityY(0)
+        .withRotationalRate(0));
     }
   }
 
@@ -135,7 +135,7 @@ public class TargetHubandShootRange extends Command {
       drive.withVelocityX(0)
       .withVelocityY(0)
       .withRotationalRate(0));
-      m_shooter.setNeutral();
+      //m_shooter.setNeutral();
   }
 
   // Returns true when the command should end.
