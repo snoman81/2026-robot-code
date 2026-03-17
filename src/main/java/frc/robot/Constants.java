@@ -43,7 +43,7 @@ public final class Constants {
     //Roller Motor Configs
     public static final int kRollerMotorPort = 31;
     public static final boolean kRollerMotorCurrentLimitEnable = true;
-    public static final int kRollerMotorCurrentLimit = 80;    
+    public static final int kRollerMotorCurrentLimit = 120;    
     public static final double kRollerKS = 0.22757;
     public static final double kRollerKV = 0.15;//0.11787;
     public static final double kRollerKA = 0.00438;
@@ -93,7 +93,7 @@ public final class Constants {
     public static final int kHopperMotorPort = 30;
     public static final boolean kHopperMotorCurrentLimitEnable = true;
     public static final int kHopperMotorCurrentLimit = 60;
-    public static final double m_HopperSpeed = 0.75; //out
+    public static final double m_HopperSpeed = -0.75; //out
   
   }
   public static class ShooterConstants {
@@ -105,8 +105,8 @@ public final class Constants {
     public static final double kS = 0.0015561;
     public static final double kV = 0.11164;
     public static final double kA = 0.021171;
-    public static final double kP = 0.17515;
-    public static final double kI = 0.025;
+    public static final double kP = 0.35;
+    public static final double kI = 0.075;
     public static final double kD = 0;
     public static final double mechanismRatio = 1.28;// count to get right value
     

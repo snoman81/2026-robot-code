@@ -6,10 +6,12 @@ package frc.robot.commands;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -56,18 +58,21 @@ public class ShooterRange extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    boolean inrange = false;
     var PoseEstimate = LimelightHelpers.getBotPose2d_wpiBlue("limelight");
+    Optional<Pose3d> pose = layout.getTagPose(m_vision.getTagRawInt());
     SmartDashboard.putNumber("tagcount", m_vision.tagCount());
     SmartDashboard.putNumber("tagID", m_vision.getTagRawInt());
     SmartDashboard.putBoolean("right tag?", tags.contains(m_vision.getTagRawInt()));
     
     //SmartDashboard.putBoolean("pose?", PoseEstimate.isPresent());
-    if (/*PoseEstimate.isPresent() &&*/ m_vision.tagCount() >= 1){
+    if (pose.isPresent() && m_vision.tagCount() >= 2){
       //Pose2d robotPose = PoseEstimate.get();
-      double distance_to_goal = PoseEstimate.getTranslation()
+      distance_to_goal = PoseEstimate.getTranslation()
       .getDistance(layout.getTagPose(m_vision.getTagRawInt()).get().toPose2d().getTranslation());
+      inrange = (distance_to_goal >= 1.25);
       SmartDashboard.putNumber("dist?", distance_to_goal);
+      SmartDashboard.putBoolean("inrange?", inrange);
 
     if (tags.contains(m_vision.getTagRawInt())){
       visibleTarget = true;
@@ -75,7 +80,7 @@ public class ShooterRange extends Command {
       shooterspeed = m_shooter.getRPM(distance_to_goal);
       SmartDashboard.putNumber("FetchedRPM", shooterspeed);
     
-    if (visibleTarget && shooterspeed > 25.0){
+    if (visibleTarget && inrange){
       m_shooter.SetVelocity(shooterspeed);
        }
       }

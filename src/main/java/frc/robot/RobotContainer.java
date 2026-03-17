@@ -11,10 +11,12 @@ import frc.robot.Constants.KickerConstants;
 import frc.robot.Constants.OperatorConstants;
 
 import frc.robot.commands.Autos;
+import frc.robot.commands.HopperRun;
 import frc.robot.commands.IntakeMove;
 import frc.robot.commands.IntakeRun;
 import frc.robot.commands.ShooterRange;
 import frc.robot.commands.TargetHubandShootRange;
+import frc.robot.commands.TargetHubandShootRangeAuto;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
@@ -29,6 +31,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -73,11 +76,19 @@ public class RobotContainer {
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
+    private final SendableChooser<Command> autoChooser;
+
   //----------------------------------------------------------------------------------------------
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    //autoChooser = AutoBuilder.buildAutoChooser();
-    //SmartDashboard.putData("Auto", autoChooser);
+    drivetrain.configureAutoBuilder();
+    NamedCommands.registerCommand("shoot", new TargetHubandShootRangeAuto(drivetrain,m_shooter,m_hopper,m_kicker,m_vision).withTimeout(2));
+    NamedCommands.registerCommand("intakeup", new IntakeMove(0, m_intake));
+    NamedCommands.registerCommand("intakedown", new IntakeMove(0.35, m_intake));
+    NamedCommands.registerCommand("hopperrun", new HopperRun(m_hopper, m_kicker));
+    autoChooser = AutoBuilder.buildAutoChooser("test1");
+    
+    SmartDashboard.putData("Auto", autoChooser);
     // Configure the trigger bindings
     configureBindings();
   }
@@ -100,44 +111,54 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(
     // Drivetrain will execute this command periodically
     drivetrain.applyRequest(() ->
-      drive.withVelocityX(-MathUtil.applyDeadband(driverX.getAsDouble()*DriveConstants.MaxSpeed,0.2) )// Drive forward with negative Y (forward)
-          .withVelocityY(-MathUtil.applyDeadband(driverY.getAsDouble()*DriveConstants.MaxSpeed,0.2)) // Drive left with negative X (left)
+      drive.withVelocityX(-Math.pow(MathUtil.applyDeadband(driverX.getAsDouble(),0.1),3.0)*DriveConstants.MaxSpeed)// Drive forward with negative Y (forward)
+          .withVelocityY(-Math.pow(MathUtil.applyDeadband(driverY.getAsDouble(),0.1),3.0)*DriveConstants.MaxSpeed) // Drive left with negative X (left)
           .withRotationalRate(-MathUtil.applyDeadband(driverROT.getAsDouble()*DriveConstants.MaxAngularRate, 0.2)) // Drive counterclockwise with negative X (left)
           )
         );
-    /* 
-    m_shooter.setDefaultCommand(new RunCommand(() -> m_shooter.SetVelocity(100), m_shooter));
-    m_intake.setDefaultCommand(new RunCommand(()-> m_intake.setRollerSpeed(0),m_intake));
-    */
+
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_driverController.a()
     .onTrue(
       new ParallelCommandGroup(
       (new RunCommand(() -> m_hopper.setDutyCycleOut(HopperConstants.m_HopperSpeed), m_hopper)),
-      (new RunCommand(()-> m_kicker.setVelocity(KickerConstants.m_KickerVelocity), m_kicker))))
+      (new RunCommand(()-> m_kicker.setVelocity(-KickerConstants.m_KickerVelocity), m_kicker)),
+      (new IntakeMove(0.1, m_intake))))
+    .onFalse(
+      new ParallelCommandGroup(
+      (new RunCommand(() -> m_hopper.setNeutral(), m_hopper)),
+      (new RunCommand(()-> m_kicker.setNeutral(), m_kicker)),
+      (new IntakeMove(0.38, m_intake)))
+      );
+    m_driverController.b()
+    .onTrue(
+      new ParallelCommandGroup(
+      (new RunCommand(() -> m_hopper.setDutyCycleOut(-HopperConstants.m_HopperSpeed), m_hopper)),
+      (new RunCommand(()-> m_kicker.setVelocity(-KickerConstants.m_KickerVelocity), m_kicker))))
     .onFalse(
       new ParallelCommandGroup(
       (new RunCommand(() -> m_hopper.setNeutral(), m_hopper)),
       (new RunCommand(()-> m_kicker.setNeutral(), m_kicker)))
       );
-    m_driverController.b().onTrue(new IntakeMove(0, m_intake));
-    m_driverController.y().onTrue(new IntakeMove(0.375, m_intake));
-    //m_driverController.x().onTrue(new RunCommand(() -> m_shooter.SetVelocity(42), m_shooter)).onFalse(new RunCommand(()-> m_shooter.setNeutral(), m_shooter));
+
     //m_driverController.x().toggleOnTrue(new ShooterRange(m_shooter, m_vision));
+    m_driverController.x().onTrue(new RunCommand(()->m_shooter.SetVelocity(42), m_shooter)).onFalse(new RunCommand(()->m_shooter.setNeutral(), m_shooter));
     m_driverController.y().toggleOnTrue(new TargetHubandShootRange(driverX, driverY,driverROT, drivetrain, m_shooter, m_vision));
+
     //m_driverController.rightTrigger().onTrue(new IntakeRun(m_intake, drivetrain));
     m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake)).onFalse(new RunCommand(()-> m_intake.setRollerNeutral(),m_intake));
-    m_driverController.leftBumper().onTrue(new IntakeMove(IntakeConstants.m_PivotDown, m_intake));
-    m_driverController.rightBumper().onTrue(new IntakeMove(IntakeConstants.m_PivotUp, m_intake));
-    m_driverController.povDown().onTrue(new RunCommand(()-> m_intake.setPivotOut(0.25), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
-  //m_driverController.leftBumper().onTrue(new RunCommand(() -> m_intake.setPivotOut(0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
-  //m_driverController.rightBumper().onTrue(new RunCommand(() -> m_intake.setPivotOut(-0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
+    m_driverController.leftStick().onTrue(new IntakeMove(IntakeConstants.m_PivotDown, m_intake));
+    m_driverController.rightStick().onTrue(new IntakeMove(IntakeConstants.m_PivotUp, m_intake));
+    m_driverController.leftBumper().onTrue(new RunCommand(()-> m_intake.setPivotOut(0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
+    m_driverController.rightBumper().onTrue(new RunCommand(()-> m_intake.setPivotOut(-0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
+
+
     //Reset Heading
     m_driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     m_driverController.back().onTrue(m_intake.runOnce(()->m_intake.setPivotZero()));
 
     //-----------SysID Stuffs------------------------------------------------------------------------------
-    //m_driverController.leftBumper().onTrue(Commands.runOnce(()->SignalLogger.setPath("/u/logs")).andThen(SignalLogger::start));
+    //m_driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     //m_driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
     // Run SysId routines when holding back/start and X/Y.
@@ -186,6 +207,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new RunCommand(()-> m_intake.setRollerSpeed(0), m_intake);//autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 }
