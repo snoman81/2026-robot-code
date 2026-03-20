@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   public Robot() {
-    /* 
+    /* */
     //AKIT Init
     Logger.recordMetadata("2026-3275-test", "MyProject"); // Set a metadata value
 
@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
     }
 
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
-    */
+    
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();

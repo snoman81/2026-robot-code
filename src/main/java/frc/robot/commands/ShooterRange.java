@@ -7,10 +7,12 @@ package frc.robot.commands;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Optional;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Distance;
@@ -64,7 +66,6 @@ public class ShooterRange extends Command {
     SmartDashboard.putNumber("tagcount", m_vision.tagCount());
     SmartDashboard.putNumber("tagID", m_vision.getTagRawInt());
     SmartDashboard.putBoolean("right tag?", tags.contains(m_vision.getTagRawInt()));
-    
     //SmartDashboard.putBoolean("pose?", PoseEstimate.isPresent());
     if (pose.isPresent() && m_vision.tagCount() >= 2){
       //Pose2d robotPose = PoseEstimate.get();

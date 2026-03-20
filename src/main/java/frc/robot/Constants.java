@@ -56,7 +56,7 @@ public final class Constants {
     //Pivor Motor Configs
     public static final int kIntakePivotMotorPort = 32;
     public static final boolean kPivorMotorCurrentLimitEnable = false;
-    public static final double kPivotMotorCurrentLimit = 40;
+    public static final double kPivotMotorCurrentLimit = 80;
     public static final double kPivotKS = 0.13865;
     public static final double kPivotKV = 0.10193;
     public static final double kPivotKA = 0.011877;
@@ -71,6 +71,8 @@ public final class Constants {
     //Pivot Motor Setpoints
     public static final double m_PivotUp = 0;
     public static final double m_PivotDown = 0.375;
+    public static final double m_IntakeDriveSpeedMax = 0;
+
     
 
   }

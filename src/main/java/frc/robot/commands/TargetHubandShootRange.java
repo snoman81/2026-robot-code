@@ -88,8 +88,9 @@ public class TargetHubandShootRange extends Command {
     SmartDashboard.putNumber("tagcount", m_vision.tagCount());
     SmartDashboard.putNumber("tagID", m_vision.getTagRawInt());
     SmartDashboard.putBoolean("right tag?", tags.contains(m_vision.getTagRawInt()));
+    double dist2 = m_vision.getDistanceToTarget().isPresent() ? m_vision.getDistanceToTarget().get() : 0.0;
+    SmartDashboard.putNumber("dist2", dist2);
     if (pose.isPresent() && m_vision.tagCount() >= 2){
-      //Pose2d robotPose = PoseEstimate.get();
       distance_to_goal = PoseEstimate.getTranslation()
       .getDistance(layout.getTagPose(m_vision.getTagRawInt()).get().toPose2d().getTranslation());
       inrange = (distance_to_goal >= 1.25);
@@ -111,8 +112,8 @@ public class TargetHubandShootRange extends Command {
       SmartDashboard.putNumber("turnout2", turn2);
       SmartDashboard.putNumber("turnout3", turn3);
       m_drivetrain.setControl(
-        drive.withVelocityX(-m_Y.getAsDouble())
-        .withVelocityY(-m_X.getAsDouble())
+        drive.withVelocityX(-m_X.getAsDouble())
+        .withVelocityY(-m_Y.getAsDouble())
         .withRotationalRate(turn2)
         );
     if (inrange){

@@ -20,7 +20,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
-  public VisionSubsystem(){}
+  public VisionSubsystem(){
+    LimelightHelpers.setCameraPose_RobotSpace(LIMELIGHT, 0.0236, 0, 0.4534, 0, 35, 180);
+  }
 
    // ========================
     // CONFIGURATION
@@ -63,12 +65,13 @@ public class VisionSubsystem extends SubsystemBase {
 
         Pose2d pose = estimate.pose;
         // Apply camera offset correction if needed
+        /* 
         pose = pose.transformBy(
             new Transform2d(
                 CAMERA_OFFSET.getTranslation().unaryMinus(),
                 new Rotation2d()
             )
-        );
+        );*/
 
         lastGoodPose = pose;
         confidenceScore = calculateConfidence(estimate);

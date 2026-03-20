@@ -140,7 +140,7 @@ public class IntakeSubsystem extends SubsystemBase {
     PivotMotor.setControl(m_request.withPosition(position));
   }
   public void setPivotOut(double output){
-    PivotMotor.setControl(new DutyCycleOut(output));
+    PivotMotor.setControl(new DutyCycleOut(output).withEnableFOC(true));
   }
   public void setPivotNeutral(){
     PivotMotor.setControl(new NeutralOut());
