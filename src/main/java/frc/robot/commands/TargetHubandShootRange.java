@@ -88,6 +88,8 @@ public class TargetHubandShootRange extends Command {
     SmartDashboard.putNumber("tagcount", m_vision.tagCount());
     SmartDashboard.putNumber("tagID", m_vision.getTagRawInt());
     SmartDashboard.putBoolean("right tag?", tags.contains(m_vision.getTagRawInt()));
+    double dist2 = m_vision.getDistanceToTarget().isPresent() ? m_vision.getDistanceToTarget().get() : 0.0;
+    SmartDashboard.putNumber("dist2", dist2);
     if (pose.isPresent() && m_vision.tagCount() >= 2){
       distance_to_goal = PoseEstimate.getTranslation()
       .getDistance(layout.getTagPose(m_vision.getTagRawInt()).get().toPose2d().getTranslation());

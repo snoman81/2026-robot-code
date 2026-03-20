@@ -118,11 +118,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
     public void RPMMapFill(){ // Fill with intake testing 
-    speedtoRPM.put(0.0,5.0);
-    speedtoRPM.put(1.5,10.0);
-    speedtoRPM.put(2.0,15.0);
-    speedtoRPM.put(2.5,17.5);
-    speedtoRPM.put(DriveConstants.MaxSpeed,60.0);
+    speedtoRPM.put(0.0,15.0);
+    speedtoRPM.put(1.5,20.0);
+    speedtoRPM.put(2.0,25.0);
+    speedtoRPM.put(2.5,30.0);
+    speedtoRPM.put(DriveConstants.MaxSpeed,50.0);
     }
 // -----methods-------------------------------------------------------------
   public void setRollerSpeed(double rps){
@@ -140,7 +140,7 @@ public class IntakeSubsystem extends SubsystemBase {
     PivotMotor.setControl(m_request.withPosition(position));
   }
   public void setPivotOut(double output){
-    PivotMotor.setControl(new DutyCycleOut(output));
+    PivotMotor.setControl(new DutyCycleOut(output).withEnableFOC(true));
   }
   public void setPivotNeutral(){
     PivotMotor.setControl(new NeutralOut());

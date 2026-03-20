@@ -16,13 +16,17 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
@@ -43,6 +47,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.004; // 4 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+    // field2d to see where it thinks it is
+    private final Field2d m_field = new Field2d();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -195,6 +201,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        getPigeon2().getAngularVelocityZWorld().setUpdateFrequency(100);
         configureAutoBuilder();
     }
 
@@ -232,6 +239,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
+        // normal odometry runs on its owwn thread in background, constantly updates, update vision pose if possible
+        updateVisionOdometry();
+        // then show where robot is on a field2d object and put it on dashboard
+        m_field.setRobotPose(getStateCopy().Pose);
+        SmartDashboard.putData(m_field);
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -240,7 +252,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
          */
 
-
+        
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(
@@ -313,8 +325,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
     public double ChassisSpeedsCalc(){
-        return Math.hypot(super.getState().Speeds.vxMetersPerSecond
-        , super.getState().Speeds.vyMetersPerSecond);
+        return Math.hypot(getStateCopy().Speeds.vxMetersPerSecond
+        , getStateCopy().Speeds.vyMetersPerSecond);
     }
 
     public void configureAutoBuilder() {
@@ -349,6 +361,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
+    }
+    private void updateVisionOdometry(){
+        double yawdegrees = getStateCopy().Pose.getRotation().getDegrees();
+        double yawRateDegPerSec = getPigeon2().getAngularVelocityZWorld().getValue().in(DegreesPerSecond);
+        LimelightHelpers.SetRobotOrientation("limelight", yawdegrees, 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
+        if (mt2 == null || mt2.tagCount == 0) return;
+        if (Math.abs(yawRateDegPerSec)>360) return;
+        double xyStdDev = mt2.tagCount >=2 ? 0.3 : 0.7;
+        setVisionMeasurementStdDevs(VecBuilder.fill(xyStdDev, xyStdDev, 9999999));
+        addVisionMeasurement(mt2.pose.plus(new Transform2d(0,0,new Rotation2d(Math.toRadians(180)))), Utils.fpgaToCurrentTime(mt2.timestampSeconds));
     }
 
 }

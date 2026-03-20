@@ -43,7 +43,7 @@ public final class Constants {
     //Roller Motor Configs
     public static final int kRollerMotorPort = 31;
     public static final boolean kRollerMotorCurrentLimitEnable = true;
-    public static final int kRollerMotorCurrentLimit = 80;    
+    public static final int kRollerMotorCurrentLimit = 100;    
     public static final double kRollerKS = 0.22757;
     public static final double kRollerKV = 0.15;//0.11787;
     public static final double kRollerKA = 0.00438;
@@ -53,10 +53,12 @@ public final class Constants {
     public static final double rollerRatio = 1.33;
     //Roller Motor Constants
     public static final double m_RollerVelocity = -30;
+    //Intake and Drive speed limit for best intaking
+    public static final double m_IntakeDriveSpeedMax = 2.0;
     //Pivor Motor Configs
     public static final int kIntakePivotMotorPort = 32;
     public static final boolean kPivorMotorCurrentLimitEnable = false;
-    public static final double kPivotMotorCurrentLimit = 40;
+    public static final double kPivotMotorCurrentLimit = 80;
     public static final double kPivotKS = 0.13865;
     public static final double kPivotKV = 0.10193;
     public static final double kPivotKA = 0.011877;
@@ -71,6 +73,7 @@ public final class Constants {
     //Pivot Motor Setpoints
     public static final double m_PivotUp = 0;
     public static final double m_PivotDown = 0.375;
+
     
 
   }

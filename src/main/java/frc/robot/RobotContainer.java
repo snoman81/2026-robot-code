@@ -14,6 +14,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.HopperRun;
 import frc.robot.commands.IntakeMove;
 import frc.robot.commands.IntakeRun;
+import frc.robot.commands.IntakeRunandDrive;
 import frc.robot.commands.ShooterRange;
 import frc.robot.commands.TargetHubandShootRange;
 import frc.robot.commands.TargetHubandShootRangeAuto;
@@ -22,6 +23,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.KickerSubsystem;
+import frc.robot.subsystems.PDH;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -58,6 +60,7 @@ public class RobotContainer {
   private final KickerSubsystem m_kicker = new KickerSubsystem();
   private final ShooterSubsystem m_shooter = new ShooterSubsystem();
   private final VisionSubsystem m_vision = new VisionSubsystem();
+  private final PDH m_pdh = new PDH();
   //-----------Drivetrain Setup-------------------------------------
    /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -139,15 +142,17 @@ public class RobotContainer {
       (new RunCommand(()-> m_kicker.setNeutral(), m_kicker)))
       );
 
-   // m_driverController.x().toggleOnTrue(new ShooterRange(m_shooter, m_vision));
-   m_driverController.x().onTrue(new RunCommand(()->m_shooter.SetVelocity(42), m_shooter)).onFalse(new RunCommand(()->m_shooter.setNeutral(), m_shooter));
+    // m_driverController.x().toggleOnTrue(new ShooterRange(m_shooter, m_vision));
+    m_driverController.x().onTrue(new RunCommand(()->m_shooter.SetVelocity(42), m_shooter)).onFalse(new RunCommand(()->m_shooter.setNeutral(), m_shooter));
     m_driverController.y().toggleOnTrue(new TargetHubandShootRange(driverX, driverY,driverROT, drivetrain, m_shooter, m_vision));
-    //m_driverController.rightTrigger().onTrue(new IntakeRun(m_intake, drivetrain));
-    m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake)).onFalse(new RunCommand(()-> m_intake.setRollerNeutral(),m_intake));
+    m_driverController.rightTrigger().toggleOnTrue(new IntakeRunandDrive(driverX, driverY, driverROT,m_intake, drivetrain));
+    //m_driverController.rightTrigger().onTrue(new RunCommand(()-> m_intake.setRollerSpeed(IntakeConstants.m_RollerVelocity),m_intake)).onFalse(new RunCommand(()-> m_intake.setRollerNeutral(),m_intake));
     m_driverController.leftStick().onTrue(new IntakeMove(IntakeConstants.m_PivotDown, m_intake));
     m_driverController.rightStick().onTrue(new IntakeMove(IntakeConstants.m_PivotUp, m_intake));
     m_driverController.leftBumper().onTrue(new RunCommand(()-> m_intake.setPivotOut(0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
     m_driverController.rightBumper().onTrue(new RunCommand(()-> m_intake.setPivotOut(-0.15), m_intake)).onFalse(new RunCommand(()->m_intake.setPivotNeutral(), m_intake));
+
+    m_driverController.povDown().onTrue(new RunCommand(()->m_pdh.toggleChannel(), m_pdh));
 
 
     //Reset Heading
