@@ -48,7 +48,7 @@ public class ShooterSubsystem extends SubsystemBase {
     .withMotorOutput(
       new MotorOutputConfigs()
       .withNeutralMode(NeutralModeValue.Coast)
-      .withInverted(InvertedValue.valueOf("CounterClockwise_Positive"))
+      .withInverted(InvertedValue.valueOf("Clockwise_Positive"))
     )
     .withCurrentLimits(
       new CurrentLimitsConfigs()
